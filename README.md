@@ -1,6 +1,6 @@
 # rn-worktree-run
 
-A [Claude Code](https://claude.com/claude-code) skill that makes React Native dev builds fast inside **git worktrees** on macOS.
+An agent skill for [Claude Code](https://claude.com/claude-code) and [Codex](https://github.com/openai/codex) that makes React Native dev builds fast inside **git worktrees** on macOS.
 
 A fresh worktree usually means a fresh `yarn install`, a fresh `pod install`, and a full native compile in a new DerivedData / `.cxx` directory. That makes every new worktree take many minutes before the app shows up. This skill removes most of that work:
 
@@ -21,17 +21,32 @@ Debug builds load JavaScript from Metro, so one native binary serves every workt
 /plugin install rn-worktree-run@rn-worktree-run
 ```
 
-### As a personal skill (symlink, updates with `git pull`)
+### As a personal skill for Claude Code and Codex (symlink, updates with `git pull`)
 
 ```bash
 git clone https://github.com/nathankim0/rn-worktree-run ~/rn-worktree-run
-~/rn-worktree-run/install.sh
-brew install ccache   # recommended
+~/rn-worktree-run/install.sh          # or: install.sh claude | install.sh codex
+brew install ccache                   # recommended
 ```
 
-Then ask Claude Code to "run the app on iOS" (or Android) in any worktree of a React Native repo.
+This links the skill into `~/.claude/skills` and `${CODEX_HOME:-~/.codex}/skills`. Restart the agent, then ask it to "run the app on iOS" (or Android) in any worktree of a React Native repo. In Codex you can also invoke it explicitly with `$rn-worktree-run`.
 
-## Usage without Claude
+### Codex skill installer
+
+Inside Codex: "install the skill from `nathankim0/rn-worktree-run` at path `skills/rn-worktree-run`" (uses the built-in `skill-installer`). This copies the skill, so it does not update with `git pull`.
+
+### Project-specific settings
+
+Keep per-project values (codegen commands, extra native paths) in your personal agent instructions rather than in the skill, e.g. `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`:
+
+```markdown
+- In ~/my-app (and its worktrees), build/run with the rn-worktree-run skill using
+  RNWT_POST_SETUP="yarn codegen" and RNWT_EXTRA_PATHS="packages".
+```
+
+Codex runs commands in a sandbox; the script needs to write to Xcode DerivedData, simulators and `~/Library/Caches`, so approve the escalated commands when asked.
+
+## Usage without an agent
 
 ```bash
 S=~/.claude/skills/rn-worktree-run/scripts/rn-worktree.sh

@@ -1,17 +1,20 @@
 ---
 name: rn-worktree-run
-description: Build and run a React Native app (iOS simulator / Android emulator dev build) quickly, especially inside a git worktree on macOS. Use when the user asks to build, run, launch, or "실행/빌드" the app in a React Native repo. Reuses the main worktree's node_modules and Pods via APFS clones, skips native compilation entirely when a build with the same native fingerprint is cached, and shares C/C++ compile results across worktrees with ccache. Not for JS-only compile steps or release builds.
+description: Build and run a React Native app (iOS simulator / Android emulator dev build) fast, especially inside a git worktree on macOS. Use when the user asks to build, run, or launch the app ("실행/빌드") in a React Native repo. Clones node_modules and Pods from the main worktree, skips native compilation when a build with the same native fingerprint is cached, and shares ccache across worktrees. Not for JS-only compile steps or release builds.
 ---
 
 # Fast React Native build & run in worktrees
 
 Use only when the user explicitly asks to build or run the app. Run every command from the root of the worktree you are working in.
 
+Set `S` to `scripts/rn-worktree.sh` in this skill's directory (the directory containing this `SKILL.md`), for example:
+
 ```bash
-S=~/.claude/skills/rn-worktree-run/scripts/rn-worktree.sh
+S=~/.claude/skills/rn-worktree-run/scripts/rn-worktree.sh   # Claude Code
+S=~/.codex/skills/rn-worktree-run/scripts/rn-worktree.sh    # Codex
 ```
 
-If the skill was installed as a plugin, use the plugin's copy of `scripts/rn-worktree.sh` next to this file instead.
+The script writes outside the workspace (main worktree, Xcode DerivedData, simulators, `~/Library/Caches`) and talks to `xcrun`, `adb`, and Metro. In sandboxed agents such as Codex, run these commands with escalated permissions instead of retrying inside the sandbox.
 
 ## How it is fast
 
@@ -34,7 +37,7 @@ If the skill was installed as a plugin, use the plugin's copy of `scripts/rn-wor
      osascript -e "tell application \"Terminal\" to do script \"cd '$(git rev-parse --show-toplevel)' && yarn start\""
      ```
      Use the project's own start script.
-3. App: `$S run ios` and/or `$S run android`. Native builds can take minutes, so run them in the background and wait for completion.
+3. App: `$S run ios` and/or `$S run android`. Native builds can take minutes: run them in the background if your agent supports it, otherwise use a long timeout (10+ minutes), and wait for completion.
    - Report whether the log said `cache hit` or `cache miss`.
    - After changing native code, or if a cached build looks wrong, force a rebuild with `$S build <ios|android>`.
 

@@ -1,6 +1,6 @@
 {
   "name": "rn-worktree-run",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Fast React Native iOS/Android dev builds inside git worktrees: APFS-cloned dependencies, fingerprinted native build cache, shared ccache.",
   "author": { "name": "nathankim0" },
   "repository": "https://github.com/nathankim0/rn-worktree-run",

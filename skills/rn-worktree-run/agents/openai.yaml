@@ -1,0 +1,4 @@
+interface:
+  display_name: "RN Worktree Run"
+  short_description: "Fast React Native dev builds in git worktrees"
+  default_prompt: "Use $rn-worktree-run to build and run this React Native app on the iOS simulator."
