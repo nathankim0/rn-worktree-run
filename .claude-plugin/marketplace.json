@@ -1,0 +1,11 @@
+{
+  "name": "rn-worktree-run",
+  "owner": { "name": "nathankim0" },
+  "plugins": [
+    {
+      "name": "rn-worktree-run",
+      "source": "./",
+      "description": "Fast React Native iOS/Android dev builds inside git worktrees."
+    }
+  ]
+}
